@@ -1,0 +1,5 @@
+task clean << { 
+  ant.delete (includeEmptyDirs: 'true') { 
+    fileset(dir: file('.'), includes: '**/*.pyc') 
+  } 
+} 

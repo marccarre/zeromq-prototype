@@ -1,0 +1,17 @@
+apply plugin: 'java'
+
+sourceCompatibility = 1.7
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile 'org.zeromq:jeromq:0.3.3'
+
+  testCompile('junit:junit:4.+') {
+    exclude group: 'org.hamcrest'
+  }
+  testCompile 'org.mockito:mockito-all:1.+'
+  testCompile 'org.hamcrest:hamcrest-all:1.+'
+}
