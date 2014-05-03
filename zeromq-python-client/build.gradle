@@ -3,3 +3,20 @@ task clean << {
     fileset(dir: file('.'), includes: '**/*.pyc') 
   } 
 } 
+
+task pip(type: Exec) {
+  commandLine 'pip', 'install', '--upgrade', '-r', 'requirements.txt'
+}
+
+task pylint(type: Exec) {
+  ignoreExitValue = true // pylint exits with a non-zero value even when just warnings are reported.
+  commandLine 'pylint', '--reports=y', "--rcfile=$projectDir/pylint.cfg", "$projectDir/src/main/python"
+}
+
+task pep8(type: Exec) {
+  commandLine 'pep8', "--config=$projectDir/pep8.cfg", "$projectDir/src/main/python"
+}
+
+task test << {
+  commandLine 'nosetests', "--config=$projectDir/nose.cfg", '--with-xunit', '--xunit-file', "$buildDir/nosetests.xml", '--xcoverage-file', "$buildDir/coverage.xml", "$projectDir/src/test/python"
+}

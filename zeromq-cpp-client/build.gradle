@@ -1,5 +1,20 @@
 apply plugin: 'cpp'
 
 executables {
-  'zeromq-cpp-client'
+   zmqClient {}
+}
+
+sources {
+  zmqClient {
+    cpp {
+      source {
+        srcDir "src/main/cpp"
+        include "**/*.cpp"
+      }
+      exportedHeaders {
+        srcDir "src/main/include"
+        include "**/*.hpp"
+      }
+    }
+  }
 }

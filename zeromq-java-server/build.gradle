@@ -7,8 +7,18 @@ repositories {
 }
 
 dependencies {
-  compile 'org.zeromq:jeromq:0.3.3'
+  compile 'org.zeromq:jeromq:0.3.+'
 
+  // Utilities:
+  compile 'com.google.guava:guava:17.+'
+  compile 'org.apache.commons:commons-lang3:3.+'
+  compile 'commons-io:commons-io:2.+'
+  
+  // Logging:
+  compile 'org.slf4j:slf4j-api:1.7.+'
+  compile 'ch.qos.logback:logback-classic:1.1.+'
+  
+  // Testing:
   testCompile('junit:junit:4.+') {
     exclude group: 'org.hamcrest'
   }
