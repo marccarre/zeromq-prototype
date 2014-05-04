@@ -21,12 +21,14 @@ public class FreePortMatcher extends BaseMatcher<Integer> {
 	}
 
 	private boolean couldConnectTo(final int port) {
+		ServerSocket socket = null;
 		try {
-			final ServerSocket socket = new ServerSocket(port);
-			IOUtils.closeQuietly(socket);
+			socket = new ServerSocket(port);
 			return true;
 		} catch (IOException e) {
 			return false;
+		} finally {
+			IOUtils.closeQuietly(socket);
 		}
 	}
 
