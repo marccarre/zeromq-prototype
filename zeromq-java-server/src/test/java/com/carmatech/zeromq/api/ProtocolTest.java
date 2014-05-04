@@ -145,7 +145,7 @@ public class ProtocolTest {
 		assertThat(reply.popString(), is("OK"));
 		assertThat(reply.popString(), is(SOURCE));
 		assertThat(reply.popString(), is(uuid.toString()));
-		assertThat(reply.popString(), is(Integer.toHexString(uuid.hashCode()).toUpperCase()));
+		assertThat(reply.popString(), is(toZmqString(uuid)));
 	}
 
 	@Test
@@ -177,7 +177,7 @@ public class ProtocolTest {
 	}
 
 	private String toZmqString(UUID uuid) {
-		return toString(toBytes(uuid));
+		return toString(toBytes(uuid)).toUpperCase();
 	}
 
 	private byte[] toBytes(final UUID uuid) {
