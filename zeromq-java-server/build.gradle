@@ -19,9 +19,14 @@ dependencies {
   compile 'ch.qos.logback:logback-classic:1.1.+'
   
   // Testing:
+  testCompile 'org.hamcrest:hamcrest-all:1.+'
   testCompile('junit:junit:4.+') {
     exclude group: 'org.hamcrest'
   }
-  testCompile 'org.mockito:mockito-all:1.+'
-  testCompile 'org.hamcrest:hamcrest-all:1.+'
+  testCompile ('org.mockito:mockito-all:1.+') {
+    exclude group: 'org.hamcrest'
+  }
+  testCompile ('com.google.guava:guava-tests:17.+') {
+    exclude group: 'org.hamcrest'
+  }
 }
