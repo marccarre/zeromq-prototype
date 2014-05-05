@@ -1,34 +1,25 @@
 package com.carmatech.zeromq.api;
 
+import static com.carmatech.zeromq.utilities.ProtocolPayloadUtilities.PROVIDER;
+import static com.carmatech.zeromq.utilities.ProtocolPayloadUtilities.toZmqString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
-import java.nio.ByteBuffer;
 import java.util.UUID;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.zeromq.ZMQ;
 import org.zeromq.ZMsg;
-
-import com.google.common.base.Function;
 
 public class ProtocolTest {
 	private static final String DESTINATION = "192.168.1.1";
 	private static final String SOURCE = "127.0.0.1";
 
 	private final IProtocol protocol = new Protocol(SOURCE);
-
-	private final Function<UUID, byte[]> provider = new Function<UUID, byte[]>() {
-		@Override
-		public byte[] apply(final UUID uuid) {
-			return toBytes(uuid);
-		}
-	};
 
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
@@ -124,7 +115,7 @@ public class ProtocolTest {
 
 	@Test
 	public void pingShouldBeRepliedToWithPong() {
-		ZMsg reply = protocol.reply(protocol.ping(DESTINATION), provider);
+		ZMsg reply = protocol.reply(protocol.ping(DESTINATION), PROVIDER);
 
 		assertThat(reply, is(not(nullValue())));
 		assertThat(reply, hasSize(3));
@@ -137,7 +128,7 @@ public class ProtocolTest {
 	@Test
 	public void requestShouldBeRepliedToWithOkAndExpectedPayload() {
 		UUID uuid = UUID.randomUUID();
-		ZMsg reply = protocol.reply(protocol.request(uuid, DESTINATION), provider);
+		ZMsg reply = protocol.reply(protocol.request(uuid, DESTINATION), PROVIDER);
 
 		assertThat(reply, is(not(nullValue())));
 		assertThat(reply, hasSize(5));
@@ -151,7 +142,7 @@ public class ProtocolTest {
 	@Test
 	public void requestWithSequenceNumberShouldBeRepliedToWithSequenceNumberAndExpectedPayload() {
 		UUID uuid = UUID.randomUUID();
-		ZMsg reply = protocol.reply(protocol.request(uuid, 1337, DESTINATION), provider);
+		ZMsg reply = protocol.reply(protocol.request(uuid, 1337, DESTINATION), PROVIDER);
 
 		assertThat(reply, is(not(nullValue())));
 		assertThat(reply, hasSize(5));
@@ -166,7 +157,7 @@ public class ProtocolTest {
 	public void requestShouldBeRepliedToWithUnknownWhenItDoesNotMatchProtocol() {
 		ZMsg invalidRequest = new ZMsg();
 		invalidRequest.addString("This is an invalid request");
-		ZMsg reply = protocol.reply(invalidRequest, provider);
+		ZMsg reply = protocol.reply(invalidRequest, PROVIDER);
 
 		assertThat(reply, is(not(nullValue())));
 		assertThat(reply, hasSize(4));
@@ -174,37 +165,5 @@ public class ProtocolTest {
 		assertThat(reply.popString(), is("UNKNOWN"));
 		assertThat(reply.popString(), is(SOURCE));
 		assertThat(reply.popString(), is(""));
-	}
-
-	private String toZmqString(UUID uuid) {
-		return toString(toBytes(uuid)).toUpperCase();
-	}
-
-	private byte[] toBytes(final UUID uuid) {
-		return ByteBuffer.allocate(Integer.SIZE).putInt(uuid.hashCode()).array();
-	}
-
-	private String toString(final byte[] data) {
-		return containsSpecialChars(data) ? new String(data, ZMQ.CHARSET) : toHexString(data);
-	}
-
-	private boolean containsSpecialChars(final byte[] data) {
-		for (int i = 0; i < data.length; i++)
-			if (data[i] < 32 || data[i] > 127)
-				return false;
-		return true;
-	}
-
-	private static final String HEXADECIMALS = "0123456789ABCDEF";
-
-	private String toHexString(final byte[] data) {
-		final StringBuilder builder = new StringBuilder();
-		for (int i = 0; i < data.length; i++) {
-			int first = data[i] >>> 4 & 0xf;
-			int second = data[i] & 0xf;
-			builder.append(HEXADECIMALS.charAt(first));
-			builder.append(HEXADECIMALS.charAt(second));
-		}
-		return builder.toString();
 	}
 }
