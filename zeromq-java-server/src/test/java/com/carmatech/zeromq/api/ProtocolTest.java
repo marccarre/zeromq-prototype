@@ -181,9 +181,7 @@ public class ProtocolTest {
 	}
 
 	private byte[] toBytes(final UUID uuid) {
-		final ByteBuffer buffer = ByteBuffer.allocate(4);
-		buffer.putInt(uuid.hashCode());
-		return buffer.array();
+		return ByteBuffer.allocate(Integer.SIZE).putInt(uuid.hashCode()).array();
 	}
 
 	private String toString(final byte[] data) {
