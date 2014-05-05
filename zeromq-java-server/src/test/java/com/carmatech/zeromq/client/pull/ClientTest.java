@@ -20,8 +20,8 @@ import org.zeromq.ZMsg;
 
 import com.carmatech.zeromq.client.pull.Client;
 import com.carmatech.zeromq.server.IServer;
-import com.carmatech.zeromq.server.pull.MultithreadedReqRepServer;
-import com.carmatech.zeromq.server.pull.ReqRepServer;
+import com.carmatech.zeromq.server.pull.MultithreadedPullServer;
+import com.carmatech.zeromq.server.pull.PullServer;
 import com.carmatech.zeromq.utilities.LocalHost;
 import com.carmatech.zeromq.utilities.Ports;
 import com.google.common.testing.FakeTicker;
@@ -33,11 +33,11 @@ public class ClientTest {
 	private final Integer[] ports = Ports.reserve(2).toArray(new Integer[2]);
 
 	private final int portSimpleServer1 = ports[0];
-	private final IServer simpleServer1 = new ReqRepServer(portSimpleServer1, PROVIDER);
+	private final IServer simpleServer1 = new PullServer(portSimpleServer1, PROVIDER);
 	private final Thread threadSimpleServer1 = new Thread(simpleServer1, "simple-server-1");
 
 	private final int portMultithreadedServer1 = ports[1];
-	private final IServer multithreadedServer1 = new MultithreadedReqRepServer(portMultithreadedServer1, PROVIDER);
+	private final IServer multithreadedServer1 = new MultithreadedPullServer(portMultithreadedServer1, PROVIDER);
 	private final Thread threadMultithreadedServer1 = new Thread(multithreadedServer1, "multithreaded-server-1");
 
 	@Before
