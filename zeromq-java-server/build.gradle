@@ -39,7 +39,9 @@ dependencies {
   
   // Logging:
   compile 'org.slf4j:slf4j-api:1.7.+'
-  compile 'ch.qos.logback:logback-classic:1.1.+'
+  compile ('ch.qos.logback:logback-classic:1.+') {
+    exclude group: 'org.slf4j'
+  }
   
   // Testing:
   testCompile 'org.hamcrest:hamcrest-all:1.+'
@@ -49,7 +51,5 @@ dependencies {
   testCompile ('org.mockito:mockito-all:1.+') {
     exclude group: 'org.hamcrest'
   }
-  testCompile ('com.google.guava:guava-tests:17.+') {
-    exclude group: 'org.hamcrest'
-  }
+  testCompile 'com.google.guava:guava-testlib:17.+'
 }
