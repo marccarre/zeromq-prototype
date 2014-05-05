@@ -1,7 +1,6 @@
 package com.carmatech.zeromq.client;
 
 import static com.carmatech.zeromq.api.Command.ERROR;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.Closeable;
 import java.util.UUID;
@@ -28,11 +27,11 @@ public class Client implements Closeable {
 	private final IProtocol protocol;
 
 	public Client() {
-		this(new ZContext(), Ticker.systemTicker());
+		this(Ticker.systemTicker());
 	}
 
-	public Client(final ZContext context, final Ticker ticker) {
-		this.context = checkNotNull(context, "ZeroMQ context must NOT be null.");
+	public Client(final Ticker ticker) {
+		context = new ZContext();
 		pipe = ZThread.fork(context, new Pipeline(ticker));
 		protocol = new Protocol(LocalHost.HOST_AND_IP);
 	}
