@@ -1,7 +1,5 @@
 package com.carmatech.zeromq.server.pull;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.UUID;
 
 import org.zeromq.ZMQ.Socket;
@@ -42,21 +40,5 @@ public class ReqRepServer extends AbstractReqRepServer implements IServer {
 		logger.debug("Starting server...");
 		serverThread.start();
 		logger.info("Server is now ready to serve incoming requests.");
-	}
-
-	public static void main(final String[] argv) throws IOException {
-		final IServer server = new ReqRepServer(8888, new Function<UUID, byte[]>() {
-			@Override
-			public byte[] apply(final UUID uuid) {
-				return ByteBuffer.allocate(Integer.SIZE).putInt(uuid.hashCode()).array();
-			}
-		});
-		server.run();
-
-		System.out.println("Press <Enter> to exit.");
-		System.in.read();
-
-		server.close();
-		System.out.println("Bye!");
 	}
 }

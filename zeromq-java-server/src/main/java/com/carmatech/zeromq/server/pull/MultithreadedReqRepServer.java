@@ -1,7 +1,5 @@
 package com.carmatech.zeromq.server.pull;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -100,21 +98,5 @@ public class MultithreadedReqRepServer extends AbstractReqRepServer implements I
 				reply.send(socket);
 			}
 		};
-	}
-
-	public static void main(final String[] args) throws IOException {
-		final IServer server = new MultithreadedReqRepServer(8888, new Function<UUID, byte[]>() {
-			@Override
-			public byte[] apply(final UUID uuid) {
-				return ByteBuffer.allocate(Integer.SIZE).putInt(uuid.hashCode()).array();
-			}
-		});
-		server.run();
-
-		System.out.println("Press <Enter> to exit.");
-		System.in.read();
-
-		server.close();
-		System.out.println("Bye!");
 	}
 }

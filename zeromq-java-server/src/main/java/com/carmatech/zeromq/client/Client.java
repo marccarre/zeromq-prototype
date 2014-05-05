@@ -1,7 +1,5 @@
 package com.carmatech.zeromq.client;
 
-import static com.carmatech.zeromq.api.Command.ERROR;
-
 import java.io.Closeable;
 import java.util.UUID;
 
@@ -66,34 +64,5 @@ public class Client implements Closeable {
 	@Override
 	public void close() {
 		context.destroy();
-	}
-
-	public static void main(final String[] argv) {
-		final Client client = new Client();
-
-		// Connect to several endpoints:
-		client.connect("tcp://localhost:8887");
-		client.connect("tcp://localhost:8888");
-		client.connect("tcp://localhost:8889");
-
-		final long start = System.currentTimeMillis();
-		for (int i = 0; i < 10; ++i) {
-			final UUID uuid = UUID.randomUUID();
-			final ZMsg reply = client.request(uuid);
-
-			try {
-				final String command = reply.popString();
-				System.out.println("Received [" + command + "] reply for [" + uuid + "].");
-
-				if (ERROR.toString().equals(command)) {
-					System.out.println("Server unresponsive, aborting...");
-					break;
-				}
-			} finally {
-				reply.destroy();
-			}
-		}
-		client.close();
-		System.out.println("Average round trip cost: " + (System.currentTimeMillis() - start) + " ms.");
 	}
 }
