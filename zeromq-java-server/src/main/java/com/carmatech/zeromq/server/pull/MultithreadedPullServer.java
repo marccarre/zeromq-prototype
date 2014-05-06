@@ -1,5 +1,7 @@
 package com.carmatech.zeromq.server.pull;
 
+import static com.carmatech.zeromq.utilities.ZeroMQ.bindTo;
+
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -49,9 +51,7 @@ public class MultithreadedPullServer extends AbstractPullServer implements IServ
 		dispatcher.setLinger(0); // Unsent messages are immediately dropped.
 		dispatcher.setTCPKeepAlive(1); // Keep connections alive.
 
-		final int returnCode = dispatcher.bind(endpoint);
-		if (returnCode == ERROR)
-			throw new IllegalStateException("Dispatcher failed to bind to [" + endpoint + "].");
+		bindTo(endpoint, dispatcher);
 
 		logger.info("Dispatcher bound to [{}].", endpoint);
 		return dispatcher;

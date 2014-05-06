@@ -1,5 +1,8 @@
 package com.carmatech.zeromq.server.pull;
 
+import static com.carmatech.zeromq.utilities.ZeroMQ.addShutdownHook;
+import static com.carmatech.zeromq.utilities.ZeroMQ.bindTo;
+import static com.carmatech.zeromq.utilities.ZeroMQ.createContext;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.UUID;
@@ -14,13 +17,9 @@ import com.carmatech.zeromq.api.IProtocol;
 import com.carmatech.zeromq.api.Protocol;
 import com.carmatech.zeromq.server.IServer;
 import com.carmatech.zeromq.utilities.LocalHost;
-import com.carmatech.zeromq.utilities.ZeroMQ;
 import com.google.common.base.Function;
 
 public abstract class AbstractPullServer implements IServer {
-
-	protected static final int ERROR = -1;
-
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
 	protected final IProtocol protocol;
@@ -31,16 +30,16 @@ public abstract class AbstractPullServer implements IServer {
 	protected final Thread shutdownThread;
 
 	public AbstractPullServer(final int port, final Function<UUID, byte[]> provider) {
-		this.provider = checkNotNull(provider);
+		this.provider = checkNotNull(provider, "Provider must NOT be null.");
 
-		shutdownThread = ZeroMQ.addShutdownHook(this);
-		context = ZeroMQ.createContext();
+		shutdownThread = addShutdownHook(this);
+		context = createContext();
 
 		protocol = new Protocol(LocalHost.HOST_AND_IP);
-		server = bindTo(port, context);
+		server = bindServerTo(port, context);
 	}
 
-	private Socket bindTo(final int port, final ZContext context) {
+	private Socket bindServerTo(final int port, final ZContext context) {
 		final Socket server = context.createSocket(ZMQ.ROUTER);
 
 		final String connectEndpoint = "tcp://localhost:" + port; // What clients should use to connect to this server, ...
@@ -50,9 +49,7 @@ public abstract class AbstractPullServer implements IServer {
 		server.setTCPKeepAlive(1); // Keep connections alive.
 
 		final String bindEndpoint = "tcp://*:" + port;
-		final int returnCode = server.bind(bindEndpoint);
-		if (returnCode == ERROR)
-			throw new IllegalStateException("Server failed to bind to [" + bindEndpoint + "].");
+		bindTo(bindEndpoint, server);
 
 		logger.info("Server bound to [{}].", bindEndpoint);
 		return server;
