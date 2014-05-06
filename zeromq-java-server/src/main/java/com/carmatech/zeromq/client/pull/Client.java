@@ -4,6 +4,7 @@ import static com.carmatech.zeromq.utilities.ZeroMQ.createContext;
 
 import java.io.Closeable;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ.Socket;
@@ -14,6 +15,7 @@ import com.carmatech.zeromq.api.IProtocol;
 import com.carmatech.zeromq.api.Protocol;
 import com.carmatech.zeromq.utilities.LocalHost;
 import com.google.common.base.Ticker;
+import com.google.common.util.concurrent.Uninterruptibles;
 
 /**
  * Resilient, broker-less, request-reply client. <br />
@@ -47,14 +49,7 @@ public class Client implements Closeable {
 	public void connect(final String endpoint) {
 		final ZMsg connect = protocol.connect(endpoint);
 		connect.send(pipe);
-		waitForConnectionToBeReady();
-	}
-
-	private void waitForConnectionToBeReady() {
-		try {
-			Thread.sleep(100L);
-		} catch (InterruptedException e) {
-		}
+		Uninterruptibles.sleepUninterruptibly(100, TimeUnit.MILLISECONDS);
 	}
 
 	public ZMsg request(final UUID uuid) {
