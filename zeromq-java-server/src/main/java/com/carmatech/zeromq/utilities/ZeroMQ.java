@@ -1,10 +1,13 @@
 package com.carmatech.zeromq.utilities;
 
+import static org.zeromq.ZMQ.Error.ETERM;
+
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ.Socket;
+import org.zeromq.ZMQException;
 
 import com.carmatech.zeromq.server.IServer;
 
@@ -46,5 +49,9 @@ public final class ZeroMQ {
 		final int returnCode = socket.bind(endpoint);
 		if (returnCode == ERROR)
 			throw new IllegalStateException("Server failed to bind to [" + endpoint + "].");
+	}
+
+	public static boolean isSigTerm(final ZMQException e) {
+		return (e != null) && (e.getErrorCode() == ETERM.getCode());
 	}
 }

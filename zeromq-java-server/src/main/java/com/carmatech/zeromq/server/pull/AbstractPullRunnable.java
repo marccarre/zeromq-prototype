@@ -1,7 +1,7 @@
 package com.carmatech.zeromq.server.pull;
 
+import static com.carmatech.zeromq.utilities.ZeroMQ.isSigTerm;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.zeromq.ZMQ.Error.ETERM;
 
 import java.util.UUID;
 
@@ -65,10 +65,6 @@ abstract class AbstractPullRunnable implements Runnable {
 
 	private boolean isInterrupted() {
 		return Thread.currentThread().isInterrupted();
-	}
-
-	private boolean isSigTerm(final ZMQException e) {
-		return (e != null) && (e.getErrorCode() == ETERM.getCode());
 	}
 
 	protected abstract void reply(final ZMsg request);
