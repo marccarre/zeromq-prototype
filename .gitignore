@@ -19,3 +19,6 @@ hs_err_pid*
 
 # Gradle files
 .gradle
+
+# Python binary files
+*.pyc
