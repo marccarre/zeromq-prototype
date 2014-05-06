@@ -42,9 +42,9 @@ public class PushClient implements Closeable {
 		LOGGER.info("PUSH client now connected to [{}].", endpoint);
 	}
 
-	public void filter(final UUID filter) {
-		socket.subscribe(filter.toString().getBytes());
-		LOGGER.info("PUSH client now accepting data for [{}].", filter);
+	public void subscribeTo(final UUID uuid) {
+		socket.subscribe(uuid.toString().getBytes());
+		LOGGER.info("PUSH client now accepting data for [{}].", uuid);
 	}
 
 	public Pair<UUID, byte[]> receive() {

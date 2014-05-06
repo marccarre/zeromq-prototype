@@ -42,7 +42,7 @@ public class PushClientTest {
 		UUID uuid1 = UUID.fromString("7af76005-d4e2-11e3-9714-3c15c2baa558");
 		UUID uuid2 = UUID.fromString("7b68f233-d4e2-11e3-94d0-3c15c2baa558");
 		UUID uuid3 = UUID.fromString("7bad73dc-d4e2-11e3-8709-3c15c2baa558");
-		client.filter(uuid2);
+		client.subscribeTo(uuid2);
 
 		queue.add(ImmutablePair.of(uuid1, PROVIDER.apply(uuid1)));
 		queue.add(ImmutablePair.of(uuid2, PROVIDER.apply(uuid2)));
@@ -63,9 +63,9 @@ public class PushClientTest {
 		UUID uuid1 = UUID.fromString("7af76005-d4e2-11e3-9714-3c15c2baa558");
 		UUID uuid2 = UUID.fromString("7b68f233-d4e2-11e3-94d0-3c15c2baa558");
 		UUID uuid3 = UUID.fromString("7bad73dc-d4e2-11e3-8709-3c15c2baa558");
-		client.filter(uuid1);
-		client.filter(uuid2);
-		client.filter(uuid3);
+		client.subscribeTo(uuid1);
+		client.subscribeTo(uuid2);
+		client.subscribeTo(uuid3);
 
 		queue.add(ImmutablePair.of(uuid1, PROVIDER.apply(uuid1)));
 		queue.add(ImmutablePair.of(uuid2, PROVIDER.apply(uuid2)));
