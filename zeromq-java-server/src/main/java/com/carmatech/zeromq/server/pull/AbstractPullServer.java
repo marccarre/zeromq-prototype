@@ -58,7 +58,8 @@ public abstract class AbstractPullServer implements IServer {
 	@Override
 	public synchronized void close() {
 		logger.debug("Closing server...");
-		Runtime.getRuntime().removeShutdownHook(shutdownThread);
+		if (!Thread.currentThread().equals(shutdownThread))
+			Runtime.getRuntime().removeShutdownHook(shutdownThread);
 		beforeClose();
 		context.destroy();
 		afterClose();
