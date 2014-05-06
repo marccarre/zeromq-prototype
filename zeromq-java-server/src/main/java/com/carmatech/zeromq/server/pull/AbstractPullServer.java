@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.UUID;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeromq.ZContext;
@@ -15,11 +14,10 @@ import com.carmatech.zeromq.api.IProtocol;
 import com.carmatech.zeromq.api.Protocol;
 import com.carmatech.zeromq.server.IServer;
 import com.carmatech.zeromq.utilities.LocalHost;
+import com.carmatech.zeromq.utilities.ZeroMQ;
 import com.google.common.base.Function;
 
 public abstract class AbstractPullServer implements IServer {
-	private static final int NUM_IO_THREADS = 1;
-	private static final int HIGH_WATER_MARK = 1000;
 
 	protected static final int ERROR = -1;
 
@@ -35,35 +33,11 @@ public abstract class AbstractPullServer implements IServer {
 	public AbstractPullServer(final int port, final Function<UUID, byte[]> provider) {
 		this.provider = checkNotNull(provider);
 
-		shutdownThread = addShutdownHook(this);
-
-		context = createContext();
+		shutdownThread = ZeroMQ.addShutdownHook(this);
+		context = ZeroMQ.createContext();
 
 		protocol = new Protocol(LocalHost.HOST_AND_IP);
 		server = bindTo(port, context);
-	}
-
-	private Thread addShutdownHook(final IServer server) {
-		final Thread shutdownThread = new Thread(getClass() + "-shutdown-hook") {
-			@Override
-			public void run() {
-				logger.warn("Interrupt received or shutdown hook triggered, now stopping server...");
-				IOUtils.closeQuietly(server);
-			}
-		};
-		Runtime.getRuntime().addShutdownHook(shutdownThread);
-		return shutdownThread;
-	}
-
-	private ZContext createContext() {
-		final ZContext context = new ZContext(NUM_IO_THREADS);
-
-		if (context.getHWM() < HIGH_WATER_MARK) {
-			context.setHWM(HIGH_WATER_MARK);
-			logger.info("High-water mark set to [{}].", HIGH_WATER_MARK);
-		}
-
-		return context;
 	}
 
 	private Socket bindTo(final int port, final ZContext context) {
