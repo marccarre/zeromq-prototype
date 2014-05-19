@@ -16,7 +16,7 @@ public final class ZeroMQ {
 
 	private static final int NUM_IO_THREADS = 1;
 	private static final int HIGH_WATER_MARK = 1000;
-	private static final int ERROR = -1;
+	public static final int ERROR = -1;
 
 	private ZeroMQ() {
 		// Pure utility class, do NOT instantiate.

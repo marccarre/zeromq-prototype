@@ -1,5 +1,6 @@
 package com.carmatech.zeromq.client.pull;
 
+import static com.carmatech.zeromq.utilities.ZeroMQ.ERROR;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import org.zeromq.ZContext;
@@ -16,8 +17,6 @@ import com.google.common.base.Ticker;
  * - for incoming messages (from router).
  */
 class Pipeline implements IAttachedRunnable {
-	private static final int ERROR = -1;
-
 	private final Ticker ticker;
 
 	public Pipeline(final Ticker ticker) {
