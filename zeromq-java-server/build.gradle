@@ -30,7 +30,7 @@ jacocoTestReport {
 }
 
 dependencies {
-  compile 'org.zeromq:jeromq:0.3.+'
+  compile 'org.zeromq:jeromq:0.3.4'
 
   // Utilities:
   compile 'com.google.guava:guava:17.+'
