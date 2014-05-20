@@ -53,7 +53,7 @@ public class Client implements Closeable {
 	}
 
 	public ZMsg request(final UUID uuid) {
-		final ZMsg request = protocol.request(uuid, UNUSED);
+		final ZMsg request = protocol.request(UNUSED, uuid);
 		request.send(pipe);
 		return ZMsg.recvMsg(pipe);
 	}

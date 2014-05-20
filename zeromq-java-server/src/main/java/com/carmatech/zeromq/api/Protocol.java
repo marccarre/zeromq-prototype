@@ -1,6 +1,7 @@
 package com.carmatech.zeromq.api;
 
 import static com.carmatech.zeromq.api.Command.CONNECT;
+import static com.carmatech.zeromq.api.Command.ERROR;
 import static com.carmatech.zeromq.api.Command.OK;
 import static com.carmatech.zeromq.api.Command.PING;
 import static com.carmatech.zeromq.api.Command.PONG;
@@ -158,7 +159,7 @@ public final class Protocol implements IProtocol {
 	 * </pre>
 	 */
 	@Override
-	public ZMsg request(final UUID uuid, final String destination) {
+	public ZMsg request(final String destination, final UUID uuid) {
 		checkNotNull(uuid, "%s must not be null.", "Requested UUID");
 		validate(destination, "Destination's endpoint");
 		final ZMsg request = create(REQUEST, destination);
@@ -180,7 +181,7 @@ public final class Protocol implements IProtocol {
 	 * </pre>
 	 */
 	@Override
-	public ZMsg request(final UUID uuid, final int sequenceNumber, final String destination) {
+	public ZMsg request(final String destination, final UUID uuid, final int sequenceNumber) {
 		checkNotNull(uuid, "%s must not be null.", "Requested UUID");
 		validate(destination, "Destination's endpoint");
 		final ZMsg request = create(sequenceNumber, destination);
@@ -267,5 +268,26 @@ public final class Protocol implements IProtocol {
 			message.dump(builder);
 			LOGGER.debug(builder.toString());
 		}
+	}
+
+	/**
+	 * <pre>
+	 * +--------------------+
+	 * | 0: ID destination  |
+	 * +--------------------+
+	 * | 1: ERROR           |
+	 * +--------------------+
+	 * | 2: ID source       |
+	 * +--------------------+
+	 * | 3: Message         |
+	 * +--------------------+
+	 * </pre>
+	 */
+	@Override
+	public ZMsg error(final String destination, final String errorMessage) {
+		validate(destination, "Destination's endpoint");
+		final ZMsg error = create(ERROR, destination);
+		error.add(errorMessage);
+		return error;
 	}
 }

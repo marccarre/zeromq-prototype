@@ -88,7 +88,7 @@ public class ProtocolTest {
 	@Test
 	public void request() {
 		UUID uuid = UUID.randomUUID();
-		ZMsg message = protocol.request(uuid, DESTINATION);
+		ZMsg message = protocol.request(DESTINATION, uuid);
 
 		assertThat(message, is(not(nullValue())));
 		assertThat(message, hasSize(4));
@@ -102,7 +102,7 @@ public class ProtocolTest {
 	@Test
 	public void requestWithSequenceNumber() {
 		UUID uuid = UUID.randomUUID();
-		ZMsg message = protocol.request(uuid, 1337, DESTINATION);
+		ZMsg message = protocol.request(DESTINATION, uuid, 1337);
 
 		assertThat(message, is(not(nullValue())));
 		assertThat(message, hasSize(4));
@@ -128,7 +128,7 @@ public class ProtocolTest {
 	@Test
 	public void requestShouldBeRepliedToWithOkAndExpectedPayload() {
 		UUID uuid = UUID.randomUUID();
-		ZMsg reply = protocol.reply(protocol.request(uuid, DESTINATION), PROVIDER);
+		ZMsg reply = protocol.reply(protocol.request(DESTINATION, uuid), PROVIDER);
 
 		assertThat(reply, is(not(nullValue())));
 		assertThat(reply, hasSize(5));
@@ -142,7 +142,7 @@ public class ProtocolTest {
 	@Test
 	public void requestWithSequenceNumberShouldBeRepliedToWithSequenceNumberAndExpectedPayload() {
 		UUID uuid = UUID.randomUUID();
-		ZMsg reply = protocol.reply(protocol.request(uuid, 1337, DESTINATION), PROVIDER);
+		ZMsg reply = protocol.reply(protocol.request(DESTINATION, uuid, 1337), PROVIDER);
 
 		assertThat(reply, is(not(nullValue())));
 		assertThat(reply, hasSize(5));
@@ -165,5 +165,18 @@ public class ProtocolTest {
 		assertThat(reply.popString(), is("UNKNOWN"));
 		assertThat(reply.popString(), is(SOURCE));
 		assertThat(reply.popString(), is(""));
+	}
+
+	@Test
+	public void error() {
+		ZMsg message = protocol.error(DESTINATION, "No hosts available");
+
+		assertThat(message, is(not(nullValue())));
+		assertThat(message, hasSize(4));
+
+		assertThat(message.popString(), is(DESTINATION));
+		assertThat(message.popString(), is("ERROR"));
+		assertThat(message.popString(), is(SOURCE));
+		assertThat(message.popString(), is("No hosts available"));
 	}
 }

@@ -14,10 +14,12 @@ public interface IProtocol {
 
 	ZMsg pong(final String destination);
 
-	ZMsg request(final UUID uuid, final String destination);
+	ZMsg request(final String destination, final UUID uuid);
 
-	ZMsg request(final UUID uuid, final int sequenceNumber, final String destination);
+	ZMsg request(final String destination, final UUID uuid, final int sequenceNumber);
 
 	ZMsg reply(final ZMsg request, Function<UUID, byte[]> provider);
+
+	ZMsg error(final String destination, final String errorMessage);
 
 }
