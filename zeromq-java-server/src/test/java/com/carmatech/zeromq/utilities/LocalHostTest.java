@@ -1,6 +1,6 @@
 package com.carmatech.zeromq.utilities;
 
-import static com.carmatech.zeromq.utilities.RegexMatcher.matches;
+import static com.carmatech.zeromq.utilities.matchers.RegexMatcher.matches;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;

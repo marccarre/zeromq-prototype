@@ -1,4 +1,4 @@
-package com.carmatech.zeromq.utilities;
+package com.carmatech.zeromq.utilities.matchers;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;

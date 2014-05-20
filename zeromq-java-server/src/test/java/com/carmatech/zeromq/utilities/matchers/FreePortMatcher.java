@@ -1,4 +1,4 @@
-package com.carmatech.zeromq.utilities;
+package com.carmatech.zeromq.utilities.matchers;
 
 import java.io.IOException;
 import java.net.ServerSocket;

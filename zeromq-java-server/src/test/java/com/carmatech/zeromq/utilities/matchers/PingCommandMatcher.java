@@ -1,4 +1,4 @@
-package com.carmatech.zeromq.utilities;
+package com.carmatech.zeromq.utilities.matchers;
 
 import static com.carmatech.zeromq.api.Command.PING;
 import static com.google.common.base.Preconditions.checkArgument;

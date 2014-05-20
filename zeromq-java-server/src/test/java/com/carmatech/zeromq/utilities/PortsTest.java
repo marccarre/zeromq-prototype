@@ -1,6 +1,6 @@
 package com.carmatech.zeromq.utilities;
 
-import static com.carmatech.zeromq.utilities.FreePortMatcher.freePort;
+import static com.carmatech.zeromq.utilities.matchers.FreePortMatcher.freePort;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;

@@ -1,7 +1,7 @@
 package com.carmatech.zeromq.client.pull2;
 
-import static com.carmatech.zeromq.utilities.PingCommandMatcher.isPingCommandWith;
 import static com.carmatech.zeromq.utilities.ProtocolPayloadUtilities.PROVIDER;
+import static com.carmatech.zeromq.utilities.matchers.PingCommandMatcher.isPingCommandWith;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
