@@ -111,28 +111,33 @@ public class HeartBeater implements Runnable {
 				LOGGER.info("Heartbeater has been interrupted: null PONG reply.");
 				return false;
 			}
-			handle(pong);
+			doHandle(pong);
 		} catch (ZMQException e) {
 			if (isSigTerm(e)) {
 				LOGGER.info("Heartbeater has been interrupted: SIGTERM.");
-				return false;
+			} else {
+				LOGGER.error("Error [" + e.getErrorCode() + "]: " + e.getMessage(), e);
 			}
-			LOGGER.error("Error [" + e.getErrorCode() + "]: " + e.getMessage(), e);
+			return false;
 		}
 		return true;
 	}
 
-	private void handle(final ZMsg pong) {
-		final String endpoint = pong.popString();
-		final String commandString = pong.popString();
-		final Command command = Command.parse(commandString);
+	private void doHandle(final ZMsg pong) {
+		try {
+			final String endpoint = pong.popString();
+			final String commandString = pong.popString();
+			final Command command = Command.parse(commandString);
 
-		if (command == PONG) {
-			final ServerProxy server = servers.get(endpoint);
-			server.activate();
-			server.refresh();
-		} else {
-			LOGGER.warn("Received invalid reply from [{}]: [{}] expected but [{}] received.", endpoint, PONG, commandString);
+			if (command == PONG) {
+				final ServerProxy server = servers.get(endpoint);
+				server.activate();
+				server.refresh();
+			} else {
+				LOGGER.warn("Received invalid reply from [{}]: [{}] expected but [{}] received.", endpoint, PONG, commandString);
+			}
+		} finally {
+			pong.destroy();
 		}
 	}
 
