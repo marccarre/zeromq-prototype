@@ -145,13 +145,13 @@ class Manager {
 			server.refresh();
 			timeouts.add(server.timeoutAt());
 
-			handleReply(reply, endpoint, commandOrSequenceNumber, command);
+			doHandleReply(reply, endpoint, commandOrSequenceNumber, command);
 		} finally {
 			reply.destroy();
 		}
 	}
 
-	private void handleReply(final ZMsg reply, final String endpoint, final String commandOrSequenceNumber, final Command command) {
+	private void doHandleReply(final ZMsg reply, final String endpoint, final String commandOrSequenceNumber, final Command command) {
 		switch (command) {
 		case PONG:
 			break;
