@@ -36,6 +36,7 @@ dependencies {
   compile 'com.google.guava:guava:17.+'
   compile 'org.apache.commons:commons-lang3:3.+'
   compile 'commons-io:commons-io:2.+'
+  compile 'com.google.code.findbugs:jsr305:2.+'
   
   // Logging:
   compile 'org.slf4j:slf4j-api:1.7.+'

@@ -14,11 +14,22 @@ import java.net.ServerSocket;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
+import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 public class PortsTest {
+	@Before
+	public void setUp() {
+		Ports.reset(); // Free previously reserved ports.
+	}
+
+	@AfterClass
+	public static void tearDownFixture() {
+		Ports.reset(); // Free previously reserved ports.
+	}
 
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
@@ -38,9 +49,22 @@ public class PortsTest {
 	}
 
 	@Test
-	public void reservingButNotUsingPortLeadToTheSamePortBeingReturnedTwice() {
+	public void reservingButNotUsingPortDoesNotLeadToTheSamePortBeingReturnedTwice() {
 		int port1 = Ports.reserve();
 		assertThat(port1, is(freePort()));
+
+		int port2 = Ports.reserve();
+		assertThat(port2, is(freePort()));
+
+		assertThat(port2, is(not(port1)));
+	}
+
+	@Test
+	public void reservingButNotUsingPortLeadToTheSamePortBeingReturnedTwiceOnlyIfResetInBetween() {
+		int port1 = Ports.reserve();
+		assertThat(port1, is(freePort()));
+
+		Ports.reset();
 
 		int port2 = Ports.reserve();
 		assertThat(port2, is(freePort()));

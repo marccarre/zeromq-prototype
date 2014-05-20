@@ -5,15 +5,19 @@ import static com.google.common.base.Preconditions.checkArgument;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.annotation.concurrent.ThreadSafe;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 
+@ThreadSafe
 public final class Ports {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Ports.class);
 
@@ -26,23 +30,29 @@ public final class Ports {
 
 	private static final int MAX_NUMBER_OF_PORTS = MAX_PORT - MIN_PORT;
 
+	private static final Set<Integer> RESERVED_PORTS = new HashSet<Integer>();
+
 	private Ports() {
 		// Pure utility class, do NOT instantiate.
 	}
 
-	public static int reserve() {
+	public static synchronized void reset() {
+		RESERVED_PORTS.clear();
+	}
+
+	public static synchronized int reserve() {
 		return reserve(1).iterator().next();
 	}
 
-	public static int reserve(final int minPort, final int maxPort) {
+	public static synchronized int reserve(final int minPort, final int maxPort) {
 		return reserve(1, minPort, maxPort).iterator().next();
 	}
 
-	public static Set<Integer> reserve(final int numPorts) {
+	public static synchronized Set<Integer> reserve(final int numPorts) {
 		return reserve(numPorts, MIN_VALID_PORT, MAX_VALID_PORT);
 	}
 
-	public static Set<Integer> reserve(final int numPorts, final int minPort, final int maxPort) {
+	public static synchronized Set<Integer> reserve(final int numPorts, final int minPort, final int maxPort) {
 		validateInputs(numPorts, minPort, maxPort);
 		final Set<Integer> reservedPorts = new LinkedHashSet<Integer>();
 
@@ -57,6 +67,8 @@ public final class Ports {
 			if (reservedPorts.size() == sockets.size())
 				checkIfEnoughPorts(numPorts, minPort, maxPort, reservedPorts);
 		}
+
+		RESERVED_PORTS.addAll(reservedPorts);
 		return reservedPorts;
 	}
 
@@ -74,6 +86,9 @@ public final class Ports {
 			final ServerSocket socket = connectTo(port);
 			if (socket == null)
 				continue; // port not available, try with next one.
+
+			if (RESERVED_PORTS.contains(port))
+				continue;
 
 			sockets.add(socket);
 			if (sockets.size() == numPorts)
